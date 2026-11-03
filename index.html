@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Viewport tuned for a kiosk/tablet:
+       - width=device-width         : fit the screen
+       - initial-scale=1            : no zoom on load
+       - maximum-scale=1, user-scalable=no : stop kids pinch-zooming out of the app
+       - viewport-fit=cover         : draw under iPhone notches -->
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+
+  <title>KidTech Learning Hub</title>
+
+  <!-- ===== PWA (Progressive Web App) wiring ===== -->
+  <!-- The manifest tells the phone/tablet this can be "installed" like an app. -->
+  <link rel="manifest" href="manifest.json" />
+  <!-- Colour of the browser UI / splash background. -->
+  <meta name="theme-color" content="#1e1b4b" />
+
+  <!-- iOS-specific: let it run fullscreen from the Home Screen. -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="KidTech" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" href="icons/favicon-32.png" />
+
+  <!-- ===== React + Babel from a CDN (no build step needed) =====
+       React    = the UI library the app is written in
+       ReactDOM = renders React onto the page
+       Babel    = translates the JSX in app.jsx into plain JS in the browser
+       NOTE: in-browser Babel is great for shared hosting simplicity. If you
+       later want maximum speed, CLAUDE.md explains switching to a Vite build. -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+
+  <style>
+    /* Remove default margins and make the app own the whole screen. */
+    html, body { margin: 0; padding: 0; height: 100%; background: #1e1b4b; }
+    #root { min-height: 100vh; }
+    /* Kiosk niceties: stop long-press text selection / iOS callout menus,
+       which are easy ways for kids to break out of the flow. Inputs re-enable
+       selection so the typing games/terminals still work. */
+    * { -webkit-tap-highlight-color: transparent; }
+    body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+    input, textarea { -webkit-user-select: text; user-select: text; }
+  </style>
+</head>
+<body>
+  <!-- React mounts the whole app into this div (see the bottom of app.jsx). -->
+  <div id="root"></div>
+
+  <!-- Our app. type="text/babel" tells Babel to transpile the JSX at load.
+       data-presets="react" guarantees JSX is converted regardless of Babel version. -->
+  <script type="text/babel" data-presets="react" src="app.jsx"></script>
+
+  <!-- ===== Register the service worker (enables offline + installability) ===== -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("service-worker.js")
+          .catch(err => console.log("SW registration failed:", err));
+      });
+    }
+  </script>
+</body>
+</html>
