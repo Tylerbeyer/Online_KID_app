@@ -58,7 +58,10 @@ function Terminal({ cmds, prompt = "$ ", welcome = [], onBack, title }) {
   const [cH, setCH] = useState([]);
   const [cI, setCI] = useState(-1);
   const endRef = useRef();
-  useEffect(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), [hist]);
+  // Curly braces matter: newer browsers make scrollIntoView() return a Promise,
+  // and an arrow without braces would hand that Promise back to React as the
+  // effect's "cleanup function" → React later calls it → crash (blank screen).
+  useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [hist]);
 
   const run = cmd => {
     const c = cmd.trim();

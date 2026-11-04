@@ -8,7 +8,7 @@
 // IMPORTANT: bump CACHE_VERSION whenever you change app.jsx or any asset, or
 // returning users may keep seeing the old cached version.
 // ─────────────────────────────────────────────────────────────────────────────
-const CACHE_VERSION = "kidtech-v10";
+const CACHE_VERSION = "kidtech-v11";
 
 // Files that make up the "app shell". Relative paths keep it working whether
 // you deploy at the site root or in a sub-folder.
